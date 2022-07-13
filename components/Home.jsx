@@ -1,38 +1,21 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useState, useEffect} from 'react';
 import { StyleSheet, Text, View, ListView, ScrollView, Button, Alert } from 'react-native';
-<<<<<<< HEAD
-import {GetPrayerTimes, GetParams} from './api/getTimes.js';
-import {createTable, getData, setData, getDataByDay} from './api/db.js';
-=======
-import {GetPrayerTimes} from './api/getTimes.js';
-import {createTable, getData, setData} from './api/db.js';
-import Home from './components/Home';
->>>>>>> master
+import {GetPrayerTimes} from '../api/getTimes.js';
+import {createTable, getData, setData} from '../api/db.js';
 
 GetPrayerTimes();
 
-export default function App() {
-<<<<<<< HEAD
-  const [fajr, setFajr] = useState('Fajr');
-  const [dhuhr, setDhuhr] = useState('Dhuhr');
-  const [asr, setAsr] = useState('Asr');
-  const [maghrib, setMaghrib] = useState('Maghrib');
-  const [isha, setIsha] = useState('Isha');
-  const [currentData, setCurrentData] = useState({});
-
-  const initializeDB = [fajr, dhuhr, asr, maghrib, isha];
+export default function Home() {
+  const [fajr, setFajr] = useState(0);
+  const [dhuhr, setDhuhr] = useState(0);
+  const [asr, setAsr] = useState(0);
+  const [maghrib, setMaghrib] = useState(0);
+  const [isha, setIsha] = useState(0);
 
   useEffect(() => {
-    let currentDay = Date.now();
-    currentDay = new Date(currentDay);
-
-    initializeDB.forEach((name, key) => {
-
-      createTable(name);
-      getDataByDay(name, currentDay.getDate());
-    });
-
+    // createTable();
+    // getData();
   }, []);
 
 
@@ -42,23 +25,23 @@ export default function App() {
       <Text  style={styles.title}>Welcome</Text>
       <View style={styles.styleContainer}>
         <Text style={styles.textContainer}>Fajr</Text>
-        <Text style={styles.textContainer}>5:30 am</Text>
+        <Text style={styles.textContainer}>{fajr}</Text>
       </View>
       <View style={styles.styleContainer}>
         <Text style={styles.textContainer}>Dhuhr</Text>
-        <Text style={styles.textContainer}>1:30 pm</Text>
+        <Text style={styles.textContainer}>{dhuhr}</Text>
       </View>
       <View style={styles.styleContainer}>
         <Text style={styles.textContainer}>Asr</Text>
-        <Text style={styles.textContainer}>6:00 pm</Text>
+        <Text style={styles.textContainer}>{asr}</Text>
       </View>
       <View style={styles.styleContainer}>
         <Text style={styles.textContainer}>Maghrib</Text>
-        <Text style={styles.textContainer}>8:40 pm</Text>
+        <Text style={styles.textContainer}>{maghrib}</Text>
       </View>
       <View style={styles.styleContainer}>
         <Text style={styles.textContainer}>Isha</Text>
-        <Text style={styles.textContainer}>10:00 pm</Text>
+        <Text style={styles.textContainer}>{isha}</Text>
       </View>
       <View style={styles.button}>
         <Button
@@ -67,15 +50,8 @@ export default function App() {
         color='white'
         />
       </View>
-      <GetParams/>
+      <StatusBar style="auto" />
     </ScrollView>
-=======
-
-  return (
-    <View style={styles.container}>
-      <Home></Home>
-    </View>
->>>>>>> master
   );
 }
 
@@ -84,10 +60,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     margin: 40,
-    minHeight: 300
   },
 
-<<<<<<< HEAD
   styleContainer: {
     flex: 1,
     flexDirection: "row",
@@ -112,10 +86,7 @@ const styles = StyleSheet.create({
 
   button: {
     backgroundColor: '#2C82C9',
-    margin: 40,
   }
 
 
-=======
->>>>>>> master
 });
