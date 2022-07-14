@@ -1673,10 +1673,10 @@
     "sudo-prompt" "^9.0.0"
     "wcwidth" "^1.0.1"
 
-"@react-native-picker/picker@^2.4.1":
-  "integrity" "sha512-1XWy3IQgwr7MWd30KdY1iUh2gQZD+JiotN1ifj/ptFUYKon/0UFwngKQaWCO/CP/FdLl20/huSSLwKedYrdMMA=="
-  "resolved" "https://registry.npmjs.org/@react-native-picker/picker/-/picker-2.4.1.tgz"
-  "version" "2.4.1"
+"@react-native-picker/picker@^2.4.2":
+  "integrity" "sha512-0nY8638h1J3wKz6P3IJMpOoxJDdOj7Dk/K2hP/xpqP3KnIY0lmoqYlhyNihuyVPocDGajf6SA7LFFsFepQ56ag=="
+  "resolved" "https://registry.npmjs.org/@react-native-picker/picker/-/picker-2.4.2.tgz"
+  "version" "2.4.2"
 
 "@react-native/assets@1.0.0":
   "integrity" "sha512-KrwSpS1tKI70wuKl68DwJZYEvXktDHdZMG0k2AXD/rJVSlB23/X2CB2cutVR0HwNMJIal9HOUOBB2rVfa6UGtQ=="

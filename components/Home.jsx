@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, ListView, ScrollView, Button, Alert } from 'rea
 import {GetPrayerTimes} from '../api/getTimes.js';
 import {createTable, getData, setData} from '../api/db.js';
 
-GetPrayerTimes();
+// GetPrayerTimes();
 
 export default function Home() {
   const [fajr, setFajr] = useState(0);

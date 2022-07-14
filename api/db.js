@@ -1,4 +1,5 @@
 import SQLite from 'react-native-sqlite-storage';
+import React, { useState } from 'react';
 
 const db = SQLite.openDatabase(
   {
@@ -17,36 +18,35 @@ const dropTable = (tableName) => {
   });
 };
 
-const createTable = (tableName) => {
+// Schema example: "(ID INTEGER PRIMARY KEY AUTOINCREMENT, timestamp TEXT, timing TEXT, day INTEGER);"
+
+const createTable = (tableName, schema) => {
   db.transaction((tx) => {
     tx.executeSql(
       "CREATE TABLE IF NOT EXISTS "
       +tableName
-      +"(ID INTEGER PRIMARY KEY AUTOINCREMENT, timestamp TEXT, timing TEXT, day INTEGER);"
+      + schema
     )
   });
 };
 
-const setData = (tableName, timestamp, timing, day) => {
-  if (timestamp.length === 0 || timing.length === 0) {
-    console.log('Warning! Please write your data.');
+// colNames example: '(timestamp, timing, day)'
+// colPlace example: '(?, ?, ?)'
+// colValue example: [timestamp, timing, day]
+const setData = (tableName, colNames, colPlace, colValue) => {
+  try {
+    db.transaction((tx) => {
+      tx.executeSql(
+        "INSERT INTO " + tableName + colNames + " VALUES " + colPlace,
+        colValue
+      );
+    });
+  } catch(err) {
+    console.log('Error for setData', err);
   }
-  else {
-    try {
-      db.transaction((tx) => {
-        tx.executeSql(
-          "INSERT INTO " + tableName +" (timestamp, timing, day) VALUES (?, ?, ?)",
-          [timestamp, timing, day]
-        );
-      });
-    } catch(err) {
-      console.log('Error for setData', err);
-    }
-  };
 };
 
-const getData = (tableName, updateData) => {
-  let result = [];
+const getData = (loadValue, tableName = 'gregorianDate') => {
   try {
     db.transaction((tx) => {
       tx.executeSql(
@@ -55,11 +55,7 @@ const getData = (tableName, updateData) => {
         (tx, results) => {
           var len = results.rows.length;
           if (len > 0) {
-            for(let i = 0; i < len; i++) {
-
-             results.rows.item(i);
-            }
-            return result
+            loadValue(results.rows.raw());
           }
         }
       );
@@ -81,7 +77,8 @@ const getDataByDay = (tableName, day) => {
           if (len > 0) {
             for(let i = 0; i < len; i++) {
 
-              result.push(results.rows.item(i));
+              // result.push(results.rows.item(i));
+              console.log(results.rows.item(i));
             }
           }
         }
