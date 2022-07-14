@@ -25,7 +25,14 @@ const createTable = (tableName, schema) => {
     tx.executeSql(
       "CREATE TABLE IF NOT EXISTS "
       +tableName
-      + schema
+      + schema,
+      [],
+      (tx, result) => {
+        // console.log('Creating the table was a success! ', result);
+      },
+      (err) => {
+        console.log('Creating the table failed! Error: ', err);
+      }
     )
   });
 };
@@ -38,7 +45,13 @@ const setData = (tableName, colNames, colPlace, colValue) => {
     db.transaction((tx) => {
       tx.executeSql(
         "INSERT INTO " + tableName + colNames + " VALUES " + colPlace,
-        colValue
+        colValue,
+        (tx, results) => {
+          // console.log('It has been inserted: ', results);
+        },
+        (err) => {
+          console.log('Could not make sql call! Error: ', err);
+        }
       );
     });
   } catch(err) {
@@ -46,7 +59,7 @@ const setData = (tableName, colNames, colPlace, colValue) => {
   }
 };
 
-const getData = (loadValue, tableName = 'gregorianDate') => {
+const getData = (loadValue, tableName) => {
   try {
     db.transaction((tx) => {
       tx.executeSql(
@@ -55,8 +68,13 @@ const getData = (loadValue, tableName = 'gregorianDate') => {
         (tx, results) => {
           var len = results.rows.length;
           if (len > 0) {
+            console.log('Hi', tableName);
+            console.log('data ', results.rows.raw());
             loadValue(results.rows.raw());
           }
+        },
+        (err) => {
+          console.log('Could not make sql call! Error: ', err);
         }
       );
     })
@@ -81,6 +99,9 @@ const getDataByDay = (tableName, day) => {
               console.log(results.rows.item(i));
             }
           }
+        },
+        (err) => {
+          console.log('Could not make sql call! Error: ', err);
         }
       );
     });

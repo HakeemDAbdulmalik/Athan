@@ -9,38 +9,92 @@ import Home from './components/Home';
 // GetPrayerTimes();
 
 const dataEntry = exampleData.data[0].date.gregorian;
+const dataEntryH = exampleData.data[0].date.hijri;
 
 export default function App() {
 
   const [dbData, setDbData] = useState([]);
+  const [gregorianDate, setGregorianDate] = useState([]);
+  const [hijriDate, setHijriDate] = useState([]);
+  const [fajr, setFajr] = useState([]);
+  const [sunrise, setSunrise] = useState([]);
+  const [dhuhr, setDhuhr] = useState([]);
+  const [asr, setAsr] = useState([]);
+  const [maghrib, setMaghrib] = useState([]);
+  const [isha, setIsha] = useState([]);
+  const [midnight, setMidnight] = useState([]);
+
   let testMe = 'hi';
 
   useEffect(() => {
+    // dropTable('searchSettings');
     // dropTable('gregorianDate');
-    createTable('searchSettings', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, city TEXT, country TEXT, state TEXT, month TEXT, year INTEGER, annual INTEGER, method TEXT, shafaq TEXT, tune TEXT, school INTEGER, midnightMode INTEGER, latitudeAdjustmentMethod INTEGER);');
+    // dropTable('hijriDate');
+    // dropTable('fajr');
+    // dropTable('sunrise');
+    // dropTable('dhuhr');
+    // dropTable('asr');
+    // dropTable('maghrib');
+    // dropTable('isha');
+    // dropTable('midnight');
+    // dropTable('settings');
 
-    createTable('gregorianDate', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, day INTEGER, month INTEGER, year INTEGER, searchID INTEGER);');
+    console.log('*******************\n*******************\n*******************');
 
-    createTable('hijrDate', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, day INTEGER, month INTEGER, year INTEGER, gregorianID INTEGER);');
+    createTable('searchSettings', '(searchID INTEGER PRIMARY KEY AUTOINCREMENT, city TEXT, country TEXT, state TEXT, month TEXT, year INTEGER, annual INTEGER, method INTEGER, shafaq TEXT, tune TEXT, school INTEGER, midnightMode INTEGER, latitudeAdjustmentMethod INTEGER);');
 
-    createTable('fajr', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID INTEGER);');
+    createTable('gregorianDate', '(gregorianID INTEGER PRIMARY KEY AUTOINCREMENT, day INTEGER, month INTEGER, year INTEGER);');
 
-    createTable('sunrise', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID INTEGER);');
+    createTable('hijriDate', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, day INTEGER, month INTEGER, year INTEGER, gregorianID REFERENCES gregorianDate (gregorianID));');
 
-    createTable('dhuhr', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID INTEGER);');
+    createTable('Fajr', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID REFERENCES gregorianDate (gregorianID));');
 
-    createTable('asr', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID INTEGER);');
+    createTable('Sunrise', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID REFERENCES gregorianDate (gregorianID));');
 
-    createTable('maghrib', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID INTEGER);');
+    createTable('Dhuhr', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID REFERENCES gregorianDate (gregorianID));');
 
-    createTable('isha', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID INTEGER);');
+    createTable('Asr', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID REFERENCES gregorianDate (gregorianID));');
 
-    createTable('midnight', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID INTEGER);');
+    createTable('Maghrib', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID REFERENCES gregorianDate (gregorianID));');
+
+    createTable('Isha', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID REFERENCES gregorianDate (gregorianID));');
+
+    createTable('Midnight', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID REFERENCES gregorianDate (gregorianID));');
+
+    // Create profile settings
+    // createTable('settings', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, color TEXT);');
+
+    // Load in the dummy data
+    // If data exists load in the data for the week
 
 
-    setData('gregorianDate', '(day, month, year)', '(?, ?, ?)', [dataEntry.day, dataEntry.month.number, dataEntry.year]);
+    // If contact selects to see a full month of data then load in
+    // all of the data
 
-    getData(setDbData);
+
+    setData('searchSettings', '(city, country, state, month, year, annual, method, shafaq, tune, school, midnightMode, latitudeAdjustmentMethod)', '(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', ['New York City', 'United States', 'NY', '07', '2022', 'false', '2', 'general', '0,0,0,0,0,0', '0', '0', '3']);
+
+    setData('gregorianDate', '(day, month, year)', '(?, ?, ?)', [dataEntry.day, dataEntry.month.number, dataEntry.year, '1']);
+
+    setData('hijriDate', '(day, month, year, gregorianID)', '(?, ?, ?, ?)', [dataEntryH.day, dataEntryH.month.number, dataEntryH.year, '1']);
+
+    // setData('Fajr', '(timing, gregorianID)', '(?, ?)', [exampleData.data[0].timings.Fajr , 1]);
+    // setData('Sunrise', '(timing, gregorianID)', '(?, ?)', [exampleData.data[0].timings.Sunrise , 1]);
+    // setData('Dhuhr', '(timing, gregorianID)', '(?, ?)', [exampleData.data[0].timings.Dhuhr , 1]);
+    // setData('Asr', '(timing, gregorianID)', '(?, ?)', [exampleData.data[0].timings.Asr , 1]);
+    // setData('Maghrib', '(timing, gregorianID)', '(?, ?)', [exampleData.data[0].timings.Maghrib , 1]);
+    // setData('Isha', '(timing, gregorianID)', '(?, ?)', [exampleData.data[0].timings.Isha , 1]);
+    // setData('Midnight', '(timing, gregorianID)', '(?, ?)', [exampleData.data[0].timings.Midnight , 1]);
+
+    getData(setGregorianDate, 'gregorianDate');
+    getData(setHijriDate, 'hijriDate');
+    getData(setFajr, 'Fajr');
+    getData(setSunrise, 'Sunrise');
+    getData(setDhuhr, 'Dhuhr');
+    getData(setAsr, 'Asr');
+    getData(setMaghrib, 'Maghrib');
+    getData(setIsha, 'Isha');
+    getData(setMidnight, 'Midnight');
   }, []);
 
   // Set data and test retrieving the data
@@ -51,12 +105,17 @@ export default function App() {
     <ScrollView style={styles.container}>
       {/* <Home></Home> */}
       <Text>Testing the db</Text>
-      {dbData.map((data) => (
+      {dbData.map((data, key) => (
         <View>
           <Text>This is the ID: {data.ID}</Text>
           <Text>This is the day: {data.day}</Text>
           <Text>This is the month: {data.month}</Text>
           <Text>This is the year: {data.year}</Text>
+        </View>
+      ))}
+      {gregorianDate.map((data, keys) => (
+        <View>
+          <Text>This is the date: {data.day}</Text>
         </View>
       ))}
       <Text>{testMe}</Text>
