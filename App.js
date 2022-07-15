@@ -8,12 +8,10 @@ import Home from './components/Home';
 
 // GetPrayerTimes();
 
-const dataEntry = exampleData.data[0].date.gregorian;
-const dataEntryH = exampleData.data[0].date.hijri;
+const dataEntry = exampleData.data;
 
 export default function App() {
 
-  const [dbData, setDbData] = useState([]);
   const [gregorianDate, setGregorianDate] = useState([]);
   const [hijriDate, setHijriDate] = useState([]);
   const [fajr, setFajr] = useState([]);
@@ -24,7 +22,10 @@ export default function App() {
   const [isha, setIsha] = useState([]);
   const [midnight, setMidnight] = useState([]);
 
-  let testMe = 'hi';
+
+  let gregorianID;
+
+  const d = new Date();
 
   useEffect(() => {
     // dropTable('searchSettings');
@@ -72,11 +73,24 @@ export default function App() {
     // all of the data
 
 
-    setData('searchSettings', '(city, country, state, month, year, annual, method, shafaq, tune, school, midnightMode, latitudeAdjustmentMethod)', '(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', ['New York City', 'United States', 'NY', '07', '2022', 'false', '2', 'general', '0,0,0,0,0,0', '0', '0', '3']);
+    // setData('searchSettings', '(city, country, state, month, year, annual, method, shafaq, tune, school, midnightMode, latitudeAdjustmentMethod)', '(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', ['New York City', 'United States', 'NY', '07', '2022', 'false', '2', 'general', '0,0,0,0,0,0', '0', '0', '3']);
 
-    setData('gregorianDate', '(day, month, year)', '(?, ?, ?)', [dataEntry.day, dataEntry.month.number, dataEntry.year, '1']);
+    /**
+     * Load the data from the example in order:
+     * gregorianDate
+     * hijriDate
+     * Prayertimes
+     */
 
-    setData('hijriDate', '(day, month, year, gregorianID)', '(?, ?, ?, ?)', [dataEntryH.day, dataEntryH.month.number, dataEntryH.year, '1']);
+    dataEntry.forEach(element => {
+      setData('gregorianDate', '(day, month, year)', '(?, ?, ?)', [element.date.gregorian.day, element.date.gregorian.month.number, element.date.gregorian.year], gregorianID);
+
+      // console.log('This is gregorianID: ', gregorianID);
+
+    });
+
+
+    // setData('hijriDate', '(day, month, year, gregorianID)', '(?, ?, ?, ?)', [dataEntryH.day, dataEntryH.month.number, dataEntryH.year, '1']);
 
     // setData('Fajr', '(timing, gregorianID)', '(?, ?)', [exampleData.data[0].timings.Fajr , 1]);
     // setData('Sunrise', '(timing, gregorianID)', '(?, ?)', [exampleData.data[0].timings.Sunrise , 1]);
@@ -105,20 +119,20 @@ export default function App() {
     <ScrollView style={styles.container}>
       {/* <Home></Home> */}
       <Text>Testing the db</Text>
-      {dbData.map((data, key) => (
+      {/* {gregorianDate.map((data, key) => (
         <View>
           <Text>This is the ID: {data.ID}</Text>
           <Text>This is the day: {data.day}</Text>
           <Text>This is the month: {data.month}</Text>
           <Text>This is the year: {data.year}</Text>
         </View>
-      ))}
-      {gregorianDate.map((data, keys) => (
+      ))} */}
+      {/* {gregorianDate.map((data, keys) => (
         <View>
           <Text>This is the date: {data.day}</Text>
         </View>
-      ))}
-      <Text>{testMe}</Text>
+      ))} */}
+      <Text>Working</Text>
     </ScrollView>
   );
 }

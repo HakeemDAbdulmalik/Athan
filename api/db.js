@@ -1,6 +1,8 @@
 import SQLite from 'react-native-sqlite-storage';
 import React, { useState } from 'react';
 
+// SQLite.enablePromise(true);
+
 const db = SQLite.openDatabase(
   {
     name: 'openAthan',
@@ -40,14 +42,16 @@ const createTable = (tableName, schema) => {
 // colNames example: '(timestamp, timing, day)'
 // colPlace example: '(?, ?, ?)'
 // colValue example: [timestamp, timing, day]
-const setData = (tableName, colNames, colPlace, colValue) => {
+const setData = (tableName, colNames, colPlace, colValue, gregorianID) => {
   try {
     db.transaction((tx) => {
       tx.executeSql(
         "INSERT INTO " + tableName + colNames + " VALUES " + colPlace,
         colValue,
         (tx, results) => {
-          // console.log('It has been inserted: ', results);
+          // console.log(results);
+          gregorianID = results.insertId;
+          console.log(gregorianID);
         },
         (err) => {
           console.log('Could not make sql call! Error: ', err);
@@ -68,8 +72,8 @@ const getData = (loadValue, tableName) => {
         (tx, results) => {
           var len = results.rows.length;
           if (len > 0) {
-            console.log('Hi', tableName);
-            console.log('data ', results.rows.raw());
+            // console.log('Hi', tableName);
+            // console.log('data ', results.rows.raw());
             loadValue(results.rows.raw());
           }
         },

@@ -14,7 +14,8 @@ export default function Home() {
   const [isha, setIsha] = useState(0);
 
   useEffect(() => {
-
+    // createTable();
+    // getData();
   }, []);
 
 
