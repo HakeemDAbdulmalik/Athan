@@ -31,15 +31,15 @@ const dropTable = (tableName) => {
 // Schema example: "(ID INTEGER PRIMARY KEY AUTOINCREMENT, timestamp TEXT, timing TEXT, day INTEGER);"
 
 const createTable = (tableName, schema) => {
-  return db.transaction((tx) => {
+  db.transaction((tx) => {
     tx.executeSql(
       "CREATE TABLE IF NOT EXISTS "
       +tableName
       + schema,
       [],
       (tx, result) => {
-        console.log('Creating the table was a success! ', result);
-        console.log('Creating the table was a success! ', tableName);
+        // console.log('Creating the table was a success! ', result);
+        // console.log('Creating the table was a success! ', tableName);
       },
       (err) => {
         console.log('Creating the table failed! Error: ', err);
@@ -51,49 +51,60 @@ const createTable = (tableName, schema) => {
 // colNames example: '(timestamp, timing, day)'
 // colPlace example: '(?, ?, ?)'
 // colValue example: [timestamp, timing, day]
-const setData = (tableName, colNames, colPlace, colValue, gregorianID) => {
-  // try {
-  //   db.transaction((tx) => {
-  //     tx.executeSql(
-  //       "INSERT INTO " + tableName + colNames + " VALUES " + colPlace,
-  //       colValue,
-  //       (tx, results) => {
-  //         // console.log(results);
-  //         gregorianID = results.insertId;
-  //         console.log(gregorianID);
-  //       },
-  //       (err) => {
-  //         console.log('Could not make sql call! Error: ', err);
-  //       }
-  //     );
-  //   });
-  // } catch(err) {
-  //   console.log('Error for setData', err);
-  // }
+const setData = (tableName, colNames, colPlace, colValue, setGregorianID) => {
+
+    return db.transaction((tx) => {
+
+      tx.executeSql(
+        "INSERT INTO " + tableName + colNames + " VALUES " + colPlace,
+        colValue,
+        (tx, results) => {
+          // console.log(results);
+          // setGregorianID(results.insertId);
+          // newVal = results.insertId;
+          tx.executeSql("INSERT INTO Fajr (timing, gregorianID) VALUES (?,?)", ["03:45 (EDT)", results.insertId]);
+          tx.executeSql(
+            "SELECT * FROM Fajr WHERE gregorianID > 2",
+            [],
+            (tx, results) => {
+              var len = results.rows.length;
+              if (len > 0) {
+                console.log('Hi', tableName);
+                console.log('data ', results.rows.raw());
+                // loadValue(results.rows.raw());
+              }
+            },
+            (err) => {
+              console.log('Could not make sql call! Error: ', err);
+            }
+          );
+        },
+        (err) => {
+          console.log('Could not make sql call! Error: ', err);
+        }
+      );
+    });
 };
 
 const getData = (loadValue, tableName) => {
-  // try {
-  //   db.transaction((tx) => {
-  //     tx.executeSql(
-  //       "SELECT * FROM " + tableName,
-  //       [],
-  //       (tx, results) => {
-  //         var len = results.rows.length;
-  //         if (len > 0) {
-  //           // console.log('Hi', tableName);
-  //           // console.log('data ', results.rows.raw());
-  //           loadValue(results.rows.raw());
-  //         }
-  //       },
-  //       (err) => {
-  //         console.log('Could not make sql call! Error: ', err);
-  //       }
-  //     );
-  //   })
-  // } catch (err) {
-  //   console.log('Error with getData call: ', err);
-  // }
+
+  return  db.transaction((tx) => {
+      tx.executeSql(
+        "SELECT * FROM " + tableName,
+        [],
+        (tx, results) => {
+          var len = results.rows.length;
+          if (len > 0) {
+            // console.log('Hi', tableName);
+            // console.log('data ', results.rows.raw());
+            loadValue(results.rows.raw());
+          }
+        },
+        (err) => {
+          console.log('Could not make sql call! Error: ', err);
+        }
+      );
+    });
 };
 
 const getDataByDay = (tableName, day) => {

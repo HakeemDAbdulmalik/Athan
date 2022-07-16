@@ -21,17 +21,15 @@ export default function App() {
   const [maghrib, setMaghrib] = useState([]);
   const [isha, setIsha] = useState([]);
   const [midnight, setMidnight] = useState([]);
-
-
-  let gregorianID;
+  const [gregorianID, setGregorianID] = useState();
 
   const d = new Date();
 
   useEffect(() => {
-    // dropTable('searchSettings');
-    // dropTable('gregorianDate');
-    // dropTable('hijriDate');
-    // dropTable('fajr');
+    dropTable('searchSettings');
+    dropTable('gregorianDate');
+    dropTable('hijriDate');
+    dropTable('fajr');
     // dropTable('sunrise');
     // dropTable('dhuhr');
     // dropTable('asr');
@@ -42,31 +40,28 @@ export default function App() {
 
     console.log('*******************\n*******************\n*******************');
 
-    createTable('searchSettings', '(searchID INTEGER PRIMARY KEY AUTOINCREMENT, city TEXT, country TEXT, state TEXT, month TEXT, year INTEGER, annual INTEGER, method INTEGER, shafaq TEXT, tune TEXT, school INTEGER, midnightMode INTEGER, latitudeAdjustmentMethod INTEGER);')
-      .then(() => {
-        console.log('Tested as promise! ');
-      });
+    createTable('searchSettings', '(searchID INTEGER PRIMARY KEY AUTOINCREMENT, city TEXT, country TEXT, state TEXT, month TEXT, year INTEGER, annual INTEGER, method INTEGER, shafaq TEXT, tune TEXT, school INTEGER, midnightMode INTEGER, latitudeAdjustmentMethod INTEGER);');
 
-    // createTable('gregorianDate', '(gregorianID INTEGER PRIMARY KEY AUTOINCREMENT, day INTEGER, month INTEGER, year INTEGER);');
+    createTable('gregorianDate', '(gregorianID INTEGER PRIMARY KEY AUTOINCREMENT, day INTEGER, month INTEGER, year INTEGER);');
 
-    // createTable('hijriDate', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, day INTEGER, month INTEGER, year INTEGER, gregorianID REFERENCES gregorianDate (gregorianID));');
+    createTable('hijriDate', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, day INTEGER, month INTEGER, year INTEGER, gregorianID REFERENCES gregorianDate (gregorianID));');
 
-    // createTable('Fajr', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID REFERENCES gregorianDate (gregorianID));');
+    createTable('Fajr', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID REFERENCES gregorianDate (gregorianID));');
 
-    // createTable('Sunrise', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID REFERENCES gregorianDate (gregorianID));');
+    createTable('Sunrise', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID REFERENCES gregorianDate (gregorianID));');
 
-    // createTable('Dhuhr', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID REFERENCES gregorianDate (gregorianID));');
+    createTable('Dhuhr', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID REFERENCES gregorianDate (gregorianID));');
 
-    // createTable('Asr', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID REFERENCES gregorianDate (gregorianID));');
+    createTable('Asr', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID REFERENCES gregorianDate (gregorianID));');
 
-    // createTable('Maghrib', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID REFERENCES gregorianDate (gregorianID));');
+    createTable('Maghrib', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID REFERENCES gregorianDate (gregorianID));');
 
-    // createTable('Isha', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID REFERENCES gregorianDate (gregorianID));');
+    createTable('Isha', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID REFERENCES gregorianDate (gregorianID));');
 
-    // createTable('Midnight', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID REFERENCES gregorianDate (gregorianID));');
+    createTable('Midnight', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID REFERENCES gregorianDate (gregorianID));');
 
     // Create profile settings
-    // createTable('settings', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, color TEXT);');
+    createTable('settings', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, color TEXT);');
 
     // Load in the dummy data
     // If data exists load in the data for the week
@@ -85,17 +80,25 @@ export default function App() {
      * Prayertimes
      */
 
-    // dataEntry.forEach(element => {
-    //   setData('gregorianDate', '(day, month, year)', '(?, ?, ?)', [element.date.gregorian.day, element.date.gregorian.month.number, element.date.gregorian.year], gregorianID);
+    dataEntry.forEach(element => {
+      let test = 0;
+      setData('gregorianDate', '(day, month, year)', '(?, ?, ?)', [element.date.gregorian.day, element.date.gregorian.month.number, element.date.gregorian.year], setGregorianID, test)
+        .then((data) => {
+          setData('hijriDate', '(day, month, year, gregorianID)', '(?, ?, ?, ?)', [element.date.hijri.day, element.date.hijri.month.number, element.date.hijri.year, gregorianID]);
+          // console.log('This is data: ', data);
+          // console.log('This is gregorianID: ', gregorianID);
+          getData(setHijriDate, 'hijriDate');
+          // console.log(hijriDate);
+          // console.log('This is test: ', test);
+        });
 
-    //   // console.log('This is gregorianID: ', gregorianID);
 
-    // });
+    });
 
 
     // setData('hijriDate', '(day, month, year, gregorianID)', '(?, ?, ?, ?)', [dataEntryH.day, dataEntryH.month.number, dataEntryH.year, '1']);
 
-    // setData('Fajr', '(timing, gregorianID)', '(?, ?)', [exampleData.data[0].timings.Fajr , 1]);
+    // setData('Fajr', '(timing, gregorianID)', '(?, ?)', [exampleData.data[0].timings.Fajr ,]);
     // setData('Sunrise', '(timing, gregorianID)', '(?, ?)', [exampleData.data[0].timings.Sunrise , 1]);
     // setData('Dhuhr', '(timing, gregorianID)', '(?, ?)', [exampleData.data[0].timings.Dhuhr , 1]);
     // setData('Asr', '(timing, gregorianID)', '(?, ?)', [exampleData.data[0].timings.Asr , 1]);
