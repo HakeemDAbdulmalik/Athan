@@ -51,39 +51,29 @@ const createTable = (tableName, schema) => {
 // colNames example: '(timestamp, timing, day)'
 // colPlace example: '(?, ?, ?)'
 // colValue example: [timestamp, timing, day]
-const setData = (tableName, colNames, colPlace, colValue, setGregorianID) => {
+const setData = (tableName, colNames, colPlace, colValue, element) => {
+  let prayerTableNames = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha', 'Midnight'];
 
-    return db.transaction((tx) => {
-
-      tx.executeSql(
-        "INSERT INTO " + tableName + colNames + " VALUES " + colPlace,
-        colValue,
-        (tx, results) => {
-          // console.log(results);
-          // setGregorianID(results.insertId);
-          // newVal = results.insertId;
-          tx.executeSql("INSERT INTO Fajr (timing, gregorianID) VALUES (?,?)", ["03:45 (EDT)", results.insertId]);
+  db.transaction((tx) => {
+    tx.executeSql(
+      "INSERT INTO " + tableName + colNames + " VALUES " + colPlace,
+      colValue,
+      (tx, results) => {
+        // results.insertId
+        prayerTableNames.forEach(name => {
           tx.executeSql(
-            "SELECT * FROM Fajr WHERE gregorianID > 2",
-            [],
-            (tx, results) => {
-              var len = results.rows.length;
-              if (len > 0) {
-                console.log('Hi', tableName);
-                console.log('data ', results.rows.raw());
-                // loadValue(results.rows.raw());
-              }
-            },
-            (err) => {
-              console.log('Could not make sql call! Error: ', err);
-            }
+            `INSERT INTO ${name} (timing, gregorianID) VALUES (?,?)`, [element.timings[name], results.insertId]
           );
-        },
-        (err) => {
-          console.log('Could not make sql call! Error: ', err);
-        }
-      );
-    });
+        });
+        tx.executeSql(
+          `INSERT INTO hijriDate (day, month, year, gregorianID) VALUES (?, ?, ?, ?)`, [element.date.hijri.day, element.date.hijri.month.number, element.date.hijri.year, results.insertId]
+        );
+      },
+      (err) => {
+        console.log('Could not make sql call! Error: ', err);
+      }
+    );
+  });
 };
 
 const getData = (loadValue, tableName) => {
@@ -95,9 +85,9 @@ const getData = (loadValue, tableName) => {
         (tx, results) => {
           var len = results.rows.length;
           if (len > 0) {
-            // console.log('Hi', tableName);
-            // console.log('data ', results.rows.raw());
-            loadValue(results.rows.raw());
+            console.log('This is ', tableName);
+            console.log('data ', results.rows.raw());
+            // loadValue(results.rows.raw());
           }
         },
         (err) => {

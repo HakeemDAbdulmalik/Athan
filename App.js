@@ -30,13 +30,13 @@ export default function App() {
     dropTable('gregorianDate');
     dropTable('hijriDate');
     dropTable('fajr');
-    // dropTable('sunrise');
-    // dropTable('dhuhr');
-    // dropTable('asr');
-    // dropTable('maghrib');
-    // dropTable('isha');
-    // dropTable('midnight');
-    // dropTable('settings');
+    dropTable('sunrise');
+    dropTable('dhuhr');
+    dropTable('asr');
+    dropTable('maghrib');
+    dropTable('isha');
+    dropTable('midnight');
+    dropTable('settings');
 
     console.log('*******************\n*******************\n*******************');
 
@@ -81,17 +81,9 @@ export default function App() {
      */
 
     dataEntry.forEach(element => {
-      let test = 0;
-      setData('gregorianDate', '(day, month, year)', '(?, ?, ?)', [element.date.gregorian.day, element.date.gregorian.month.number, element.date.gregorian.year], setGregorianID, test)
-        .then((data) => {
-          setData('hijriDate', '(day, month, year, gregorianID)', '(?, ?, ?, ?)', [element.date.hijri.day, element.date.hijri.month.number, element.date.hijri.year, gregorianID]);
-          // console.log('This is data: ', data);
-          // console.log('This is gregorianID: ', gregorianID);
-          getData(setHijriDate, 'hijriDate');
-          // console.log(hijriDate);
-          // console.log('This is test: ', test);
-        });
 
+      // Pass the element value and use tx to create Insert calls for the database.
+      setData('gregorianDate', '(day, month, year)', '(?, ?, ?)', [element.date.gregorian.day, element.date.gregorian.month.number, element.date.gregorian.year], element);
 
     });
 
