@@ -11,7 +11,9 @@ import Home from './components/Home';
 const dataEntry = exampleData.data;
 
 export default function App() {
+  let prayerTableNames = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha', 'Midnight'];
 
+  const [settings, setSettings] = useState([]);
   const [gregorianDate, setGregorianDate] = useState([]);
   const [hijriDate, setHijriDate] = useState([]);
   const [fajr, setFajr] = useState([]);
@@ -21,9 +23,9 @@ export default function App() {
   const [maghrib, setMaghrib] = useState([]);
   const [isha, setIsha] = useState([]);
   const [midnight, setMidnight] = useState([]);
-  const [gregorianID, setGregorianID] = useState();
+  const [currentPrayerTimes, setCurrentPrayerTimes] = useState();
 
-  const d = new Date();
+  let gregorianID = {};
 
   useEffect(() => {
     dropTable('searchSettings');
@@ -38,84 +40,159 @@ export default function App() {
     dropTable('midnight');
     dropTable('settings');
 
-    console.log('*******************\n*******************\n*******************');
-
-    createTable('searchSettings', '(searchID INTEGER PRIMARY KEY AUTOINCREMENT, city TEXT, country TEXT, state TEXT, month TEXT, year INTEGER, annual INTEGER, method INTEGER, shafaq TEXT, tune TEXT, school INTEGER, midnightMode INTEGER, latitudeAdjustmentMethod INTEGER);');
+    createTable('searchSettings', '(searchID INTEGER PRIMARY KEY AUTOINCREMENT, city TEXT, country TEXT, state TEXT, month INTEGER, year INTEGER, annual TEXT, method TEXT, shafaq TEXT, tune TEXT, school INTEGER, midnightMode INTEGER, latitudeAdjustmentMethod INTEGER, iso8601 TEXT);');
 
     createTable('gregorianDate', '(gregorianID INTEGER PRIMARY KEY AUTOINCREMENT, day INTEGER, month INTEGER, year INTEGER);');
 
     createTable('hijriDate', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, day INTEGER, month INTEGER, year INTEGER, gregorianID REFERENCES gregorianDate (gregorianID));');
 
-    createTable('Fajr', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID REFERENCES gregorianDate (gregorianID));');
-
-    createTable('Sunrise', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID REFERENCES gregorianDate (gregorianID));');
-
-    createTable('Dhuhr', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID REFERENCES gregorianDate (gregorianID));');
-
-    createTable('Asr', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID REFERENCES gregorianDate (gregorianID));');
-
-    createTable('Maghrib', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID REFERENCES gregorianDate (gregorianID));');
-
-    createTable('Isha', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID REFERENCES gregorianDate (gregorianID));');
-
-    createTable('Midnight', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID REFERENCES gregorianDate (gregorianID));');
+    prayerTableNames.forEach(name => {
+      createTable(name, '(ID INTEGER PRIMARY KEY AUTOINCREMENT, timing TEXT, gregorianID REFERENCES gregorianDate (gregorianID));');
+    });
 
     // Create profile settings
     createTable('settings', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, color TEXT);');
 
-    // Load in the dummy data
-    // If data exists load in the data for the week
-
-
-    // If contact selects to see a full month of data then load in
-    // all of the data
-
-
-    // setData('searchSettings', '(city, country, state, month, year, annual, method, shafaq, tune, school, midnightMode, latitudeAdjustmentMethod)', '(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', ['New York City', 'United States', 'NY', '07', '2022', 'false', '2', 'general', '0,0,0,0,0,0', '0', '0', '3']);
-
-    /**
-     * Load the data from the example in order:
-     * gregorianDate
-     * hijriDate
-     * Prayertimes
-     */
+    // setData('searchSettings', '(city, country, state, month, year, annual, method, shafaq, tune, school, midnightMode, latitudeAdjustmentMethod)', '(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', ['New York City', 'United States', 'NY', '07', '2022', 'false', '2', 'general', '0,0,0,0,0,0', '0', '0', '3', 'true']);
 
     dataEntry.forEach(element => {
 
       // Pass the element value and use tx to create Insert calls for the database.
-      setData('gregorianDate', '(day, month, year)', '(?, ?, ?)', [element.date.gregorian.day, element.date.gregorian.month.number, element.date.gregorian.year], element);
+      setData('gregorianDate', '(day, month, year)', '(?, ?, ?)', [element.date.gregorian.day, element.date.gregorian.month.number, element.date.gregorian.year], element, prayerTableNames);
 
     });
 
+    // getData(setSettings, 'searchSettings');
+    let getLocalData = [];
+    getData(setGregorianDate, 'gregorianDate')
+      .then((data) => {
+        // Grab the value of the gregorianDate id that corisponds with
+        // the current day.
+        const d = new Date();
+          gregorianDate.forEach(obj => {
 
-    // setData('hijriDate', '(day, month, year, gregorianID)', '(?, ?, ?, ?)', [dataEntryH.day, dataEntryH.month.number, dataEntryH.year, '1']);
+            if (obj.day === d.getDate() && obj.month === (d.getMonth() + 1)) {
+              console.log('****\n');
+              gregorianID.ID = obj.gregorianID;
+            }
+          });
+      })
+      .then(() => {
+        getLocalData.push(getData(setHijriDate, 'hijriDate')
+          .then(() => {
+            let hijriObj = {};
 
-    // setData('Fajr', '(timing, gregorianID)', '(?, ?)', [exampleData.data[0].timings.Fajr ,]);
-    // setData('Sunrise', '(timing, gregorianID)', '(?, ?)', [exampleData.data[0].timings.Sunrise , 1]);
-    // setData('Dhuhr', '(timing, gregorianID)', '(?, ?)', [exampleData.data[0].timings.Dhuhr , 1]);
-    // setData('Asr', '(timing, gregorianID)', '(?, ?)', [exampleData.data[0].timings.Asr , 1]);
-    // setData('Maghrib', '(timing, gregorianID)', '(?, ?)', [exampleData.data[0].timings.Maghrib , 1]);
-    // setData('Isha', '(timing, gregorianID)', '(?, ?)', [exampleData.data[0].timings.Isha , 1]);
-    // setData('Midnight', '(timing, gregorianID)', '(?, ?)', [exampleData.data[0].timings.Midnight , 1]);
+            hijriDate.forEach(hijriD => {
+              if (hijriD.gregorianID === gregorianID.ID) {
+                hijriObj.hDay = hijriD.day;
+                hijriObj.hMonth = hijriD.month;
+                hijriObj.hYear = hijriD.year;
+              }
+            });
 
-    // getData(setGregorianDate, 'gregorianDate');
-    // getData(setHijriDate, 'hijriDate');
-    // getData(setFajr, 'Fajr');
-    // getData(setSunrise, 'Sunrise');
-    // getData(setDhuhr, 'Dhuhr');
-    // getData(setAsr, 'Asr');
-    // getData(setMaghrib, 'Maghrib');
-    // getData(setIsha, 'Isha');
-    // getData(setMidnight, 'Midnight');
+            return hijriObj;
+          }));
+          getLocalData.push(
+            getData(setFajr, 'Fajr')
+            .then(() => {
+              let result = {};
+              fajr.forEach(times => {
+                if (times.gregorianID === gregorianID.ID) {
+                  result.Fajr = times.timing;
+                }
+              });
+              return result;
+            })
+          );
+        getLocalData.push(getData(setSunrise, 'Sunrise')
+            .then(() => {
+              let result = {};
+              sunrise.forEach(times => {
+                if (times.gregorianID === gregorianID.ID) {
+                  result.Sunrise = times.timing;
+                }
+              });
+              return result;
+            })
+        )
+        getLocalData.push(getData(setDhuhr, 'Dhuhr')
+            .then(() => {
+              let result = {};
+              dhuhr.forEach(times => {
+                if (times.gregorianID === gregorianID.ID) {
+                  result.Dhuhr = times.timing;
+                }
+              });
+              return result;
+            })
+        )
+        getLocalData.push(getData(setAsr, 'Asr')
+            .then(() => {
+              let result = {};
+              asr.forEach(times => {
+                if (times.gregorianID === gregorianID.ID) {
+                  result.Asr = times.timing;
+                }
+              });
+              return result;
+            })
+        )
+        getLocalData.push(getData(setMaghrib, 'Maghrib')
+            .then(() => {
+              let result = {};
+              maghrib.forEach(times => {
+                if (times.gregorianID === gregorianID.ID) {
+                  result.Maghrib = times.timing;
+                }
+              });
+              return result;
+            })
+        )
+        getLocalData.push(getData(setIsha, 'Isha')
+            .then(() => {
+              let result = {};
+              isha.forEach(times => {
+                if (times.gregorianID === gregorianID.ID) {
+                  result.Isha = times.timing;
+                }
+              });
+              return result;
+            })
+        )
+        getLocalData.push(getData(setMidnight, 'Midnight')
+          .then(() => {
+            let result = {};
+            midnight.forEach(times => {
+              if (times.gregorianID === gregorianID.ID) {
+                result.Midnight = times.timing;
+              }
+            });
+            return result;
+          })
+        )
+      })
+      .then(() => {
+        Promise.all(getLocalData).then((values) => {
+          let returnValues = {};
+          values.forEach(element => {
+            let elementKeys = Object.keys(element);
+
+            elementKeys.forEach(val => {
+              returnValues[val] = element[val];
+            });
+          });
+          setCurrentPrayerTimes(returnValues);
+        });
+      });
+
   }, []);
-
-  // Set data and test retrieving the data
-  // Focus on getting one record in and out properly
-  // Build the database and test it first.
 
   return (
     <ScrollView style={styles.container}>
-      {/* <Home></Home> */}
+      {
+        currentPrayerTimes && <Home times={currentPrayerTimes}></Home>
+      }
+
       <Text>Testing the db</Text>
       {/* {gregorianDate.map((data, key) => (
         <View>

@@ -6,48 +6,43 @@ import {createTable, getData, setData} from '../api/db.js';
 
 // GetPrayerTimes();
 
-export default function Home() {
-  const [fajr, setFajr] = useState(0);
-  const [dhuhr, setDhuhr] = useState(0);
-  const [asr, setAsr] = useState(0);
-  const [maghrib, setMaghrib] = useState(0);
-  const [isha, setIsha] = useState(0);
-
-  useEffect(() => {
-
-  }, []);
-
-
+export default function Home({times}) {
 
   return (
     <ScrollView style={styles.container}>
       <Text  style={styles.title}>Welcome</Text>
+
+      <View style={styles.styleContainer}>
+        <Text style={styles.textContainer}>Hijri Date:</Text>
+        <Text style={styles.textContainer}>{`${times.hDay}/${times.hMonth}/${times.hYear}`}</Text>
+      </View>
+
       <View style={styles.styleContainer}>
         <Text style={styles.textContainer}>Fajr</Text>
-        <Text style={styles.textContainer}>{fajr}</Text>
+        <Text style={styles.textContainer}>{times.Fajr}</Text>
       </View>
       <View style={styles.styleContainer}>
         <Text style={styles.textContainer}>Dhuhr</Text>
-        <Text style={styles.textContainer}>{dhuhr}</Text>
+        <Text style={styles.textContainer}>{times.Dhuhr}</Text>
       </View>
       <View style={styles.styleContainer}>
         <Text style={styles.textContainer}>Asr</Text>
-        <Text style={styles.textContainer}>{asr}</Text>
+        <Text style={styles.textContainer}>{times.Asr}</Text>
       </View>
       <View style={styles.styleContainer}>
         <Text style={styles.textContainer}>Maghrib</Text>
-        <Text style={styles.textContainer}>{maghrib}</Text>
+        <Text style={styles.textContainer}>{times.Maghrib}</Text>
       </View>
       <View style={styles.styleContainer}>
         <Text style={styles.textContainer}>Isha</Text>
-        <Text style={styles.textContainer}>{isha}</Text>
+        <Text style={styles.textContainer}>{times.Isha}</Text>
       </View>
       <View style={styles.button}>
-        <Button
+        {/* <Button
         title="Change Location"
         onPress={() => (Alert.alert("hi"))}
         color='white'
-        />
+        /> */}
       </View>
       <StatusBar style="auto" />
     </ScrollView>

@@ -51,8 +51,7 @@ const createTable = (tableName, schema) => {
 // colNames example: '(timestamp, timing, day)'
 // colPlace example: '(?, ?, ?)'
 // colValue example: [timestamp, timing, day]
-const setData = (tableName, colNames, colPlace, colValue, element) => {
-  let prayerTableNames = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha', 'Midnight'];
+const setData = (tableName, colNames, colPlace, colValue, element, prayerTableNames) => {
 
   db.transaction((tx) => {
     tx.executeSql(
@@ -76,7 +75,7 @@ const setData = (tableName, colNames, colPlace, colValue, element) => {
   });
 };
 
-const getData = (loadValue, tableName) => {
+const getData = (loadValue, tableName, loadTime) => {
 
   return  db.transaction((tx) => {
       tx.executeSql(
@@ -85,9 +84,9 @@ const getData = (loadValue, tableName) => {
         (tx, results) => {
           var len = results.rows.length;
           if (len > 0) {
-            console.log('This is ', tableName);
-            console.log('data ', results.rows.raw());
-            // loadValue(results.rows.raw());
+            // console.log('This is ', tableName);
+            // console.log('data ', results.rows.raw());
+            loadValue(results.rows.raw());
           }
         },
         (err) => {
@@ -97,38 +96,10 @@ const getData = (loadValue, tableName) => {
     });
 };
 
-const getDataByDay = (tableName, day) => {
-  let result = [];
-  // try {
-  //   db.transaction((tx) => {
-  //     tx.executeSql(
-  //       "SELECT * FROM " + tableName + " WHERE day = " + day + ";" ,
-  //       [],
-  //       (tx, results) => {
-  //         var len = results.rows.length;
-  //         if (len > 0) {
-  //           for(let i = 0; i < len; i++) {
-
-  //             // result.push(results.rows.item(i));
-  //             console.log(results.rows.item(i));
-  //           }
-  //         }
-  //       },
-  //       (err) => {
-  //         console.log('Could not make sql call! Error: ', err);
-  //       }
-  //     );
-  //   });
-  //   console.log(result);
-  // } catch (err) {
-  //   console.log('Error with getData call: ', err);
-  // }
-};
 
 module.exports = {
   createTable,
   getData,
   setData,
   dropTable,
-  getDataByDay,
 }

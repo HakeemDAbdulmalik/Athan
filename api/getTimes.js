@@ -81,94 +81,27 @@ const methods = [
   },
 ];
 
-function GetPrayerTimes(city, state, country, year, month, method) {
-  return axios.get(`http://api.aladhan.com/v1/calendarByCity?city=${city}&state=${state}&country=${country}&method=${method}&month=${month}&year=${year}`)
-  .catch(err => console.log(err));
-}
-
-function cleanData(rawData) {
-
-  console.log('**********\n');
-  console.log('**********\n');
-  console.log('**********\n');
-  console.log('**********\n');
-  console.log('**********\n');
-  console.log('**********\n');
-  console.log('**********\n');
-  console.log('**********\n');
-  console.log('**********\n');
-  console.log('**********\n');
-  console.log('**********\n');
-  console.log('**********\n');
-
-  let tableNames = Object.keys(rawData.data.data[0].timings);
-  tableNames.forEach((prayerTable, keys) => {
-    // console.log('keys: ', prayerTable);
-    dropTable(prayerTable);
-    createTable(prayerTable);
-  });
-
-  console.log('**********\n');
-  console.log('**********\n');
-  console.log('**********\n');
-  console.log('**********\n');
-  console.log('**********\n');
-  console.log('**********\n');
-  console.log('**********\n');
-  console.log('**********\n');
-  console.log('**********\n');
-  console.log('**********\n');
-  console.log('**********\n');
-  console.log('**********\n');
-  rawData.data.data.forEach(data => {
-    let day = new Date(data.date.timestamp * 1000);
-
-    tableNames.forEach((prayerTable, keys) => {
-      // console.log('keys: ', prayerTable);
-      setData(prayerTable, data.date.timestamp, data.timings[prayerTable], day.getDate());
-      // console.log('for setdata: ', data.timings[prayerTable]);
-    });
-
-
-
-    // let dataDate = parseInt(data.date.timestamp);
-    // let dateTest = new Date(dataDate * 1000);
-    // let dateNow = Date.now()
-    // console.log(data.timings);
-    // console.log(data.date.timestamp);
-    // console.log(dateTest - dateNow);
-    // console.log(dateTest);
-
-
-  });
-
-  tableNames.forEach((prayerTable, keys) => {
-    // console.log('keys: ', prayerTable);
-    // Add the day as a value multiple tables can be searched by
-    getData(prayerTable);
-  });
-
-
-}
-
-let prayerTable = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
-
-function offlineData() {
-  prayerTable.forEach((prayerName, keys) => {
-    // console.log('keys: ', prayerName);
-    // Add the day as a value multiple Names can be searched by
-    getData(prayerName);
-  });
+function GetPrayerTimes({city, state, country, year, month, method, annual, shafaq, tune, midnightMode, latitudeAdjustmentMethod, iso8601, school}) {
+  return axios.get(`http://api.aladhan.com/v1/calendarByCity?city=${city}&country=${country}&method=${method}&month=${month}&year=${year}&state=${state}&annual=${annual}&shafaq=${shafaq}&tune=${tune}&midnightMode=${midnightMode}&latitudeAdjustmentMethod=${latitudeAdjustmentMethod}&iso8601=${iso8601}&school=${school}`)
+    .then(({data}) => ((data)))
+    .catch(err => console.log(err));
 }
 
 function GetParams() {
 
-  const [city, setCity] = useState('NewYorkCity');
-  const [state, setState] = useState('NewYork');
-  const [country, setCountry] = useState('United States');
-  const [year, setYear] = useState(2022);
-  const [month, setMonth] = useState(1);
-  const [method, setMethod] = useState(2);
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+  const [country, setCountry] = useState('');
+  const [year, setYear] = useState(0);
+  const [month, setMonth] = useState(0);
+  const [method, setMethod] = useState('');
+  const [annual, setAnnual] = useState('');
+  const [shafaq, setShafaq] = useState('');
+  const [tune, setTune] = useState('');
+  const [midnightMode, setMidnightMode] = useState(0);
+  const [latitudeAdjustmentMethod, setLatitudeAdjustmentMethod] = useState(0);
+  const [iso8601, setIso8601] = useState('');
+  const [school, setSchool] = useState(0);
 
   return (
     <View style={{minHeight: 300}}>
@@ -205,9 +138,9 @@ function GetParams() {
         <Button
           title="Update"
           onPress={() => {
-            offlineData()
-            .then(data => (console.log('This is the offline data: ', data)))
-            .catch(err => (console.log('Error with the GetPrayerTimes call: ', err)));
+            console.log(
+              'Hi from Prams button'
+            );
           }}
           color='white'
           />
