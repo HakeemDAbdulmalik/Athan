@@ -5,6 +5,7 @@ import {GetPrayerTimes} from './api/getTimes.js';
 import {createTable, getData, setData, dropTable} from './api/db.js';
 import exampleData from './api/exampleData.js';
 import Home from './components/Home';
+import SearchSettings from './components/SearchSettings';
 
 // GetPrayerTimes();
 
@@ -13,7 +14,7 @@ const dataEntry = exampleData.data;
 export default function App() {
   let prayerTableNames = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha', 'Midnight'];
 
-  const [settings, setSettings] = useState([]);
+  const [searchSettings, setSearchSettings] = useState([]);
   const [gregorianDate, setGregorianDate] = useState([]);
   const [hijriDate, setHijriDate] = useState([]);
   const [fajr, setFajr] = useState([]);
@@ -28,17 +29,17 @@ export default function App() {
   let gregorianID = {};
 
   useEffect(() => {
-    dropTable('searchSettings');
-    dropTable('gregorianDate');
-    dropTable('hijriDate');
-    dropTable('fajr');
-    dropTable('sunrise');
-    dropTable('dhuhr');
-    dropTable('asr');
-    dropTable('maghrib');
-    dropTable('isha');
-    dropTable('midnight');
-    dropTable('settings');
+    // dropTable('searchSettings');
+    // dropTable('gregorianDate');
+    // dropTable('hijriDate');
+    // dropTable('fajr');
+    // dropTable('sunrise');
+    // dropTable('dhuhr');
+    // dropTable('asr');
+    // dropTable('maghrib');
+    // dropTable('isha');
+    // dropTable('midnight');
+    // dropTable('settings');
 
     createTable('searchSettings', '(searchID INTEGER PRIMARY KEY AUTOINCREMENT, city TEXT, country TEXT, state TEXT, month INTEGER, year INTEGER, annual TEXT, method TEXT, shafaq TEXT, tune TEXT, school INTEGER, midnightMode INTEGER, latitudeAdjustmentMethod INTEGER, iso8601 TEXT);');
 
@@ -53,7 +54,7 @@ export default function App() {
     // Create profile settings
     createTable('settings', '(ID INTEGER PRIMARY KEY AUTOINCREMENT, color TEXT);');
 
-    // setData('searchSettings', '(city, country, state, month, year, annual, method, shafaq, tune, school, midnightMode, latitudeAdjustmentMethod)', '(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', ['New York City', 'United States', 'NY', '07', '2022', 'false', '2', 'general', '0,0,0,0,0,0', '0', '0', '3', 'true']);
+    setData('searchSettings', '(city, country, state, month, year, annual, method, shafaq, tune, school, midnightMode, latitudeAdjustmentMethod)', '(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', ['New York City', 'United States', 'NY', '07', '2022', 'false', '2', 'general', '0,0,0,0,0,0', '0', '0', '3', 'true']);
 
     dataEntry.forEach(element => {
 
@@ -62,7 +63,7 @@ export default function App() {
 
     });
 
-    // getData(setSettings, 'searchSettings');
+    // getData(setSearchSettings, 'searchSettings');
     let getLocalData = [];
     getData(setGregorianDate, 'gregorianDate')
       .then((data) => {
@@ -185,29 +186,22 @@ export default function App() {
         });
       });
 
+      getData(setSearchSettings, 'searchSettings')
+        .then(() => {
+          console.log(searchSettings);
+        })
+
   }, []);
 
   return (
     <ScrollView style={styles.container}>
       {
-        currentPrayerTimes && <Home times={currentPrayerTimes}></Home>
+        currentPrayerTimes &&
+        <View>
+          <Home times={currentPrayerTimes}></Home>
+          <SearchSettings></SearchSettings>
+        </View>
       }
-
-      <Text>Testing the db</Text>
-      {/* {gregorianDate.map((data, key) => (
-        <View>
-          <Text>This is the ID: {data.ID}</Text>
-          <Text>This is the day: {data.day}</Text>
-          <Text>This is the month: {data.month}</Text>
-          <Text>This is the year: {data.year}</Text>
-        </View>
-      ))} */}
-      {/* {gregorianDate.map((data, keys) => (
-        <View>
-          <Text>This is the date: {data.day}</Text>
-        </View>
-      ))} */}
-      <Text>Working</Text>
     </ScrollView>
   );
 }
