@@ -4,18 +4,37 @@ import { StyleSheet, Text, View, ListView, ScrollView, Button, Alert } from 'rea
 import {GetPrayerTimes} from '../api/getTimes.js';
 import {createTable, getData, setData} from '../api/db.js';
 
-export default function Calendar() {
+function calRow(calVal, index) {
+
+  return(
+    <View>
+      <Text style={{fontSize: 9}}>{`${calVal.date.gregorian.day} \t ${calVal.date.hijri.day} \t ${calVal.timings.Fajr} \t ${calVal.timings.Dhuhr} \t ${calVal.timings.Asr} \t ${calVal.timings.Maghrib} \t ${calVal.timings.Isha}`}</Text>
+    </View>
+  );
+}
+
+export default function Calendar({calTimes}) {
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <Text  style={styles.title}>Calendar</Text>
 
       <View style={styles.styleContainer}>
-        <Text style={styles.textContainer}>Hijri Date:</Text>
-        <Text style={styles.textContainer}>Testing</Text>
+        <Text style={styles.textContainer}>Day</Text>
+        <Text style={styles.textContainer}>Hijri</Text>
+        <Text style={styles.textContainer}>Fajr</Text>
+        <Text style={styles.textContainer}>Dhuhr</Text>
+        <Text style={styles.textContainer}>Asr</Text>
+        <Text style={styles.textContainer}>Maghrib</Text>
+        <Text style={styles.textContainer}>Isha</Text>
       </View>
+      {
+        calTimes.map((data, key) => (
+          calRow(data, key)
+        ))
+      }
 
-    </ScrollView>
+    </View>
   );
 }
 
@@ -23,7 +42,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    margin: 40,
+    margin: 10,
   },
 
   styleContainer: {

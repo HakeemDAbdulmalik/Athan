@@ -9,8 +9,8 @@ import SwitchToggle from 'react-native-switch-toggle';
 const year = [];
 const d = new Date();
 
-for (let index = 0; index < 20; index++) {
-  year.unshift(d.getFullYear() - index);
+for (let index = 0; index < 15; index++) {
+  // year.unshift(d.getFullYear() - index);
   year.push(d.getFullYear() + index);
 }
 const month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
@@ -25,10 +25,14 @@ const latitudeAdjustmentMethod = ['Middle of the Night', 'One Seventh', 'Angle B
 
 function DropDown(showValues, currentValue) {
 
-  let defaultVal;
+  function findYear(year) {
+    return year === currentValue;
+  }
 
-  if (currentValue >= 0) {
-    console.log('hi');
+  if (currentValue >= 0 && showValues && currentValue < 2000) {
+    currentValue = showValues[currentValue];
+  } else if (currentValue > 2000) {
+    currentValue = showValues[showValues.findIndex(findYear)];
   }
 
   return (
@@ -55,7 +59,7 @@ function DropDown(showValues, currentValue) {
 
 export default function SearchSettings({settings}) {
 
-  console.log('Props: ', settings);
+  // console.log('Props: ', settings);
 
   function off(on, setOn) {
     setOn(!on);
@@ -85,7 +89,7 @@ export default function SearchSettings({settings}) {
       </View>
       <View style={styles.textContainer}>
         <Text>Month:</Text>
-        {DropDown(month, settings.month)}
+        {DropDown(month, settings.month - 1)}
       </View>
       <View style={styles.textContainer}>
         <Text>Method:</Text>
@@ -109,7 +113,7 @@ export default function SearchSettings({settings}) {
       </View>
       <View style={styles.textContainer}>
         <Text>Latitude Adjustment Method:</Text>
-        {DropDown(latitudeAdjustmentMethod, settings.latitudeAdjustmentMethod) /** 1 must be added to each of the values */}
+        {DropDown(latitudeAdjustmentMethod, settings.latitudeAdjustmentMethod - 1) /** 1 must be added to each of the values */}
       </View>
       <View style={styles.textContainer}>
         <Text>School:</Text>
