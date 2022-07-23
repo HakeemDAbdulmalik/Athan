@@ -9,6 +9,7 @@ import {createTable, getData, setData} from '../api/db.js';
 export default function Home({times}) {
 
   return (
+
     <ScrollView style={styles.container}>
       <Text  style={styles.title}>Welcome</Text>
 

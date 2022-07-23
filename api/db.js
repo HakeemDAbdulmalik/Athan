@@ -84,9 +84,11 @@ const getData = (loadValue, tableName, loadTime) => {
         (tx, results) => {
           var len = results.rows.length;
           if (len > 0) {
-            // console.log('This is ', tableName);
+            console.log('This is ', tableName, ' with a length: ', len);
             // console.log('data ', results.rows.raw());
             loadValue(results.rows.raw());
+          } else{
+            console.log('Table did not load data!');
           }
         },
         (err) => {

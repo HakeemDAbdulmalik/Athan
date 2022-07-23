@@ -54,3 +54,6 @@ buck-out/
 .expo/
 web-build/
 dist/
+
+# Personal
+scratchpaper.js

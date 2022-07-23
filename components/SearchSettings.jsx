@@ -6,9 +6,6 @@ import {GetPrayerTimes} from '../api/getTimes.js';
 import {getData, setData} from '../api/db.js';
 import SwitchToggle from 'react-native-switch-toggle';
 
-// GetPrayerTimes();
-
-// Everything after country needs a dropdown
 const year = [];
 const d = new Date();
 
@@ -22,74 +19,21 @@ const method = ['Shia Ithna-Ansari', 'University of Islamic Sciences, Karachi', 
 const annual = [false];
 const school = ['Shafi', 'Hanafi'];
 const shafaq = ['general', 'ahmer', 'abyad'];
-const tune = [0,0,0,0,0,0];
+const tune = [0,0,0,0,0,0]; // add multiple text input options for each tuned value.
+const midnightMode = ['Standard', 'Jafari'];
+const latitudeAdjustmentMethod = ['Middle of the Night', 'One Seventh', 'Angle Based'];
 
-export default function SearchSettings() {
+function DropDown(showValues, currentValue) {
 
-  const countries = ["Egypt", "Canada", "Australia", "Ireland"];
-  const settings = ['city, state, country, year, month, method, annual, shafaq, tune, midnightMode, latitudeAdjustmentMethod, iso8601, school'];
+  let defaultVal;
 
-  function off(on, setOn) {
-    setOn(!on);
+  if (currentValue >= 0) {
+    console.log('hi');
   }
 
-  const [annualToggle, setAnnualToggle] = useState(false);
-  const [tuneToggle, setTuneToggle] = useState(false);
-
   return (
-    <ScrollView style={styles.container}>
-      <Text  style={styles.title}>Settings</Text>
-      <View style={styles.textContainer}>
-        <Text>City:</Text>
-        <TextInput></TextInput>
-      </View>
-      <View style={styles.textContainer}>
-        <Text>State/Province:</Text>
-        <TextInput></TextInput>
-      </View>
-      <View style={styles.textContainer}>
-        <Text>Country:</Text>
-        <TextInput></TextInput>
-      </View>
-      <View style={styles.textContainer}>
-        <Text>Year:</Text>
-        <TextInput></TextInput>
-      </View>
-      <View style={styles.textContainer}>
-        <Text>Month:</Text>
-        <TextInput></TextInput>
-      </View>
-      <View style={styles.textContainer}>
-        <Text>Method:</Text>
-        <TextInput></TextInput>
-      </View>
-      <View style={styles.textContainer}>
-        <Text>Annual:</Text>
-        <SwitchToggle switchOn={annualToggle} onPress={() => off(annualToggle, setAnnualToggle)} />
-      </View>
-      <View style={styles.textContainer}>
-        <Text>Shafaq:</Text>
-        <TextInput></TextInput>
-      </View>
-      <View style={styles.textContainer}>
-        <Text>Tune:</Text>
-        <SwitchToggle switchOn={tuneToggle} onPress={() => off(tuneToggle, setTuneToggle)} />
-      </View>
-      <View style={styles.textContainer}>
-        <Text>Midnight Mode:</Text>
-        <TextInput></TextInput>
-      </View>
-      <View style={styles.textContainer}>
-        <Text>Latitude Adjustment Method:</Text>
-        <TextInput></TextInput>
-      </View>
-      <View style={styles.textContainer}>
-        <Text>School:</Text>
-        <TextInput></TextInput>
-      </View>
-
-      <SelectDropdown
-        data={countries}
+    <SelectDropdown
+        data={showValues}
         onSelect={(selectedItem, index) => {
           console.log(selectedItem, index)
         }}
@@ -103,8 +47,86 @@ export default function SearchSettings() {
           // if data array is an array of objects then return item.property to represent item in dropdown
           return item
         }}
-      />
-    </ScrollView>
+        defaultButtonText={currentValue}
+    />
+  );
+}
+
+
+export default function SearchSettings({settings}) {
+
+  console.log('Props: ', settings);
+
+  function off(on, setOn) {
+    setOn(!on);
+  }
+
+  const [annualToggle, setAnnualToggle] = useState(false);
+  const [tuneToggle, setTuneToggle] = useState(false);
+
+  return (
+    <View style={styles.container}>
+      <Text  style={styles.title}>Settings</Text>
+      <View style={styles.textContainer}>
+        <Text>City:</Text>
+        <TextInput>{settings.city}</TextInput>
+      </View>
+      <View style={styles.textContainer}>
+        <Text>State/Province:</Text>
+        <TextInput>{settings.state}</TextInput>
+      </View>
+      <View style={styles.textContainer}>
+        <Text>Country:</Text>
+        <TextInput>{settings.country}</TextInput>
+      </View>
+      <View style={styles.textContainer}>
+        <Text>Year:</Text>
+        {DropDown(year, settings.year)}
+      </View>
+      <View style={styles.textContainer}>
+        <Text>Month:</Text>
+        {DropDown(month, settings.month)}
+      </View>
+      <View style={styles.textContainer}>
+        <Text>Method:</Text>
+        {DropDown(method, settings.method)}
+      </View>
+      <View style={styles.textContainer}>
+        <Text>Annual:</Text>
+        <SwitchToggle switchOn={annualToggle} onPress={() => off(annualToggle, setAnnualToggle)} />
+      </View>
+      <View style={styles.textContainer}>
+        <Text>Shafaq:</Text>
+        {DropDown(shafaq, settings.shafaq)}
+      </View>
+      <View style={styles.textContainer}>
+        <Text>Tune:</Text>
+        <SwitchToggle switchOn={tuneToggle} onPress={() => off(tuneToggle, setTuneToggle)} />
+      </View>
+      <View style={styles.textContainer}>
+        <Text>Midnight Mode:</Text>
+        {DropDown(midnightMode, settings.midnightMode)}
+      </View>
+      <View style={styles.textContainer}>
+        <Text>Latitude Adjustment Method:</Text>
+        {DropDown(latitudeAdjustmentMethod, settings.latitudeAdjustmentMethod) /** 1 must be added to each of the values */}
+      </View>
+      <View style={styles.textContainer}>
+        <Text>School:</Text>
+        {DropDown(school, settings.school)}
+      </View>
+      <View style={styles.textContainer}>
+        <Text>Hijri Adjustment:</Text>
+        <TextInput></TextInput>
+      </View>
+
+       <Button
+       style={styles.button}
+        title="Change Location"
+        onPress={() => (Alert.alert("hi"))}
+        color='black'
+        />
+    </View>
   );
 }
 
